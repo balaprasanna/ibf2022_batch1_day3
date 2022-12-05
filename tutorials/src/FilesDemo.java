@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -25,12 +24,12 @@ public class FilesDemo {
         // Path object
         File fobj = Paths.get(fname).toFile();
         try {
-            FileReader fr = new FileReader(fobj);
+            FileReader fr = new FileReader(fname);
             BufferedReader bdf = new BufferedReader(fr);
             String line;
             // String line = bdf.readLine();
             // System.out.println("First line = >" + line);
-            while (null != (line = bdf.readLine())) {
+            while ( (line = bdf.readLine()) != null ) {
                 System.out.println("> " + line);
             }
 
