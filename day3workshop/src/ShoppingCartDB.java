@@ -1,3 +1,9 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,9 +23,31 @@ public class ShoppingCartDB {
     
     private CartDBInMemroy db;
     private String currentUser;
+    private String baseFolder;
 
     public ShoppingCartDB() {
-        this.db = new CartDBInMemroy();
+        this.baseFolder = "db"; // default
+        this.setup();
+        this.db = new CartDBInMemroy(this.baseFolder);
+    }
+
+    public ShoppingCartDB(String baseFolder) {
+        this.baseFolder = baseFolder;
+        this.setup();
+        this.db = new CartDBInMemroy(this.baseFolder);
+    }
+
+    public void setup(){
+        Path p = Paths.get(this.baseFolder);
+        if (Files.isDirectory(p)) {
+            // SKIP if directory already exits
+        } else {
+            try {
+            Files.createDirectory(p);
+            } catch (IOException e) {
+                System.out.println("Error :" + e.getMessage());
+            }
+        }
     }
 
     public void startShell() {
@@ -77,6 +105,7 @@ public class ShoppingCartDB {
                 break;
 
             case SAVE:
+                this.SaveAction();
                 break;
 
             case USERS:
@@ -106,6 +135,27 @@ public class ShoppingCartDB {
         for (String item : this.db.userMap.get(this.currentUser)) {
             System.out.println("Item -> " + item);
         }
+    }
+
+    public void SaveAction() {        
+        // Prepare the filePath = "db/<username>.db"
+        String outputFilename = String.format("%s/%s.db", 
+        this.baseFolder, this.currentUser);
+
+        try {
+            FileWriter fw = new FileWriter(outputFilename);
+            // Save the contents for this user in Map to a file.
+            for (String item : this.db.userMap.get(this.currentUser)) {
+                fw.write(item +"\n");
+            }
+            fw.flush();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        
+        
     }
 
 }
