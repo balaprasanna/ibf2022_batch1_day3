@@ -61,7 +61,6 @@ public class SocketApp {
                 String fromClient = dis.readUTF();
 
                 if (fromClient.equalsIgnoreCase("exit")) {
-                    // Send a random cookie from the file
                     break;
                 }
                 System.out.println("LOG: msg from client: " + fromClient);
