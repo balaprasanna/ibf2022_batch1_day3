@@ -36,7 +36,13 @@ public class SocketApp {
             int port = Integer.parseInt(args[1]);
             String fileName = args[2];
             StartServer(port, fileName);
-        } else if (type.equalsIgnoreCase("client")) {
+        }
+        else if (type.equalsIgnoreCase("thread.server")) {
+            int port = Integer.parseInt(args[1]);
+            String fileName = args[2];
+            StartMultiThreaderServer(port, fileName);
+        }
+         else if (type.equalsIgnoreCase("client")) {
             String hostName = args[1];
             int port = Integer.parseInt(args[2]);
             StartClient(hostName, port);
@@ -82,6 +88,25 @@ public class SocketApp {
             e.printStackTrace();
         }        
     }
+
+    public static void StartMultiThreaderServer(int port, String fileName) {
+        ServerSocket srver;
+        try {
+            srver = new ServerSocket(port);
+
+            while (true) {
+                Socket socket = srver.accept();
+                DataInputStream dis = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+                DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+                Thread tsh = new ThreadSockethHandler(socket, dis, dos);
+                tsh.start();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }        
+    }
+
 
     public static void StartClient(String host, int port) {
         try {
